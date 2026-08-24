@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>评论区存档</title>
+    <style>
+      *{box-sizing:border-box}body{margin:0;background:#eef1f4;color:#253858;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;letter-spacing:0}
+      .toolbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 18px;background:#fff;border-bottom:1px solid #dcdfe6}
+      .title{min-width:0}.title strong{display:block;font-size:16px}.title span{display:block;margin-top:2px;color:#7a8594;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:65vw}
+      .actions{display:flex;gap:8px;flex-shrink:0}button{border:1px solid #cfd6df;background:#fff;color:#34495e;border-radius:4px;padding:7px 13px;cursor:pointer}button.primary{background:#1677ff;border-color:#1677ff;color:#fff}button:hover{filter:brightness(.97)}
+      .status{padding:9px 18px;background:#f0f9eb;color:#397a32;border-bottom:1px solid #c2e7b0;font-size:12px}.status.error{background:#fef0f0;color:#b42318;border-color:#f6c2c2}
+      iframe{display:block;width:100%;height:calc(100vh - 100px);border:0;background:#f4f6f8}.image-stage{min-height:calc(100vh - 100px);padding:24px;display:flex;align-items:flex-start;justify-content:center}.image-stage[hidden]{display:none}.image-stage img{display:block;max-width:min(100%,1100px);height:auto;border:1px solid #d8dee7;background:#fff;box-shadow:0 4px 18px rgba(37,56,88,.1);cursor:zoom-in}.image-stage.zoomed{position:fixed;inset:0;z-index:20;display:block;padding:36px;overflow:auto;background:rgba(20,29,42,.92);text-align:center}.image-stage.zoomed img{display:inline-block;width:min(1600px,150vw);max-width:none;cursor:zoom-out;box-shadow:0 8px 34px rgba(0,0,0,.38)}.empty{max-width:620px;margin:80px auto;padding:28px;background:#fff;border:1px solid #dcdfe6;border-radius:6px;text-align:center;color:#606266}
+      @media(max-width:680px){.toolbar{align-items:flex-start;flex-direction:column}.title span{max-width:90vw}.actions{width:100%}.actions button{flex:1}iframe{height:calc(100vh - 145px)}}
+    </style>
+    <script type="module" crossorigin src="/assets/evidence-Bz_SV3kQ.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="/assets/index-uNZTZ_Kr.js">
+  </head>
+  <body>
+    <header class="toolbar">
+      <div class="title"><strong id="archive-title">评论区存档</strong><span id="archive-meta">正在读取本地存档…</span></div>
+      <div class="actions"><button id="open-source">打开原文</button><button id="export-archive" class="primary">导出</button></div>
+    </header>
+    <div id="integrity-status" class="status">正在校验存档完整性…</div>
+    <div id="empty" class="empty" hidden></div>
+    <main id="image-stage" class="image-stage" hidden><img id="archive-image" alt="评论截图"></main>
+    <iframe id="archive-frame" sandbox="" referrerpolicy="no-referrer" title="评论区静态存档"></iframe>
+  </body>
+</html>

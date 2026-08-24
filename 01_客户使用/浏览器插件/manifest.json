@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "DL评论助手",
+  "version": "2.0.0",
+  "description": "检测我的评论、点赞和收藏状态，并在插件内完成内容任务",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "scripting",
+    "debugger",
+    "unlimitedStorage",
+    "alarms",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://*.csdn.net/*",
+    "https://*.zhihu.com/*",
+    "https://*.toutiao.com/*",
+    "https://*.baijiahao.baidu.com/*",
+    "https://comment.api.163.com/*",
+    "https://*.163.com/*",
+    "https://*.sohu.com/*",
+    "https://*/*",
+    "http://*/*"
+  ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "DL评论助手",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.csdn.net/*",
+        "https://*.zhihu.com/*",
+        "https://*.toutiao.com/*",
+        "https://*.baijiahao.baidu.com/*",
+        "https://*.163.com/*"
+        ,"https://*.sohu.com/*"
+      ],
+      "js": ["content/index.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

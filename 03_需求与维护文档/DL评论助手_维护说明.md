@@ -242,45 +242,55 @@ npm.cmd run build:release
 
 ## 十一、GitHub 仓库与远程同步
 
-- 仓库：`https://github.com/leidalin/DL-comment-helper`（**私有**，默认分支 `main`）
-- 工作副本：`G:\常用文件\ai写的exe\DL评论助手_github`（不是源码目录本身；改完源码后按下面步骤镜像过去）
+- 仓库（**已有，只更新，不要再建新仓库**）：`https://github.com/leidalin/cnsinda-ai-dist`，公开，GPL-3.0，默认分支 `main`
+- 工作副本：`G:\常用文件\ai写的exe\_cnsinda_ai_dist_upload`（已带 `.git`，直接在这里更新后 push）
 
-**仓库内容**
+**仓库结构**
 
 | 仓库路径 | 来源 |
 | --- | --- |
-| `README.md` | 仓库自建（项目结构 / 功能概览 / 构建 / 安装） |
-| `src/` `scripts/` `public/` `manifest.json` `package.json` `package-lock.json` `tsconfig.json` `vite.config.ts` | `02_完整源码\插件源码` 原样复制 |
-| `dist/`（27 个文件） | `release-dist` 镜像（**必须与客户目录一致**） |
-| `docs/DL评论助手_维护说明.md` | 本文件 |
-| `docs/V2_客户安装与使用说明.md` | `01_客户使用\V2_客户安装与使用说明.md` |
+| `01_客户使用/浏览器插件/`（27 个文件） | `02_完整源码\插件源码\release-dist` **镜像**（必须与 `dist`、客户目录一致，旧哈希文件要清掉） |
+| `01_客户使用/V2_客户安装与使用说明.md` | 同名文件 |
+| `02_完整源码/插件源码/` | `src` `scripts` `public` + `manifest.json` `package.json` `package-lock.json` `tsconfig.json` `vite.config.ts` `README.md` |
+| `03_需求与维护文档/DL评论助手_维护说明.md` | 本文件 |
+| `DL评论助手_V2_客户使用_最终版.zip` + `.sha256` | 客户交付包与校验值 |
+| `版本信息.json` | 版本 / 构建日期 / 包名 / SHA256 / 平台清单 |
+| `README.md`、`LICENSE`、`.gitignore` | 仓库自维护 |
 
-**不进仓库**：`node_modules`、`release-dist`、`_backup_*`、`*.zip` 及备份包、`*.bak.*`、`.aiproxy_sxd/`、`*.dlconfig`、`.env`（见 `.gitignore`）。交付 zip 作为 Release 资产上传，文件名用 ASCII（`DL-comment-helper-v2.0.3.zip`）——中文名会被 gh 上传成 `DL._V2_._.zip` 这类乱码名。
+**不进仓库**：`node_modules`、`release-dist`、`_backup_*`、`*.zip.backup-*`、`*.bak.*`、`*.orig`、`.aiproxy_sxd/`、`*.dlconfig`、`.env`（见 `.gitignore`）。**交付 zip 本身要提交**，所以不要写 `*.zip` 通配。
 
-**发布到 GitHub（发版后执行）**
+**更新到 GitHub（发版后执行）**
 
 ```powershell
-# 1. 镜像源码与产物到工作副本
-$SRC = "G:\常用文件\ai写的exe\已经完成的检测批量插件chrome_V2"
-$DST = "G:\常用文件\ai写的exe\DL评论助手_github"
-robocopy "$SRC\02_完整源码\插件源码\src" "$DST\src" /MIR
-robocopy "$SRC\02_完整源码\插件源码\scripts" "$DST\scripts" /MIR
-robocopy "$SRC\02_完整源码\插件源码\public" "$DST\public" /MIR
-robocopy "$SRC\02_完整源码\插件源码\release-dist" "$DST\dist" /MIR   # /MIR 顺带清掉历史哈希文件
-Copy-Item "$SRC\02_完整源码\插件源码\manifest.json","$SRC\02_完整源码\插件源码\package.json","$SRC\02_完整源码\插件源码\package-lock.json","$SRC\02_完整源码\插件源码\tsconfig.json","$SRC\02_完整源码\插件源码\vite.config.ts" $DST
-Copy-Item "$SRC\03_需求与维护文档\DL评论助手_维护说明.md" "$DST\docs"
-Copy-Item "$SRC\01_客户使用\V2_客户安装与使用说明.md" "$DST\docs"
+$SRC  = "G:\常用文件\ai写的exe\已经完成的检测批量插件chrome_V2"
+$REPO = "G:\常用文件\ai写的exe\_cnsinda_ai_dist_upload"
+cd $REPO; git pull --ff-only
 
-# 2. 提交推送
-cd $DST
+# 1. 插件产物（先清空再镜像，避免历史哈希文件残留）
+Remove-Item "$REPO\01_客户使用\浏览器插件\*" -Recurse -Force
+robocopy "$SRC\02_完整源码\插件源码\release-dist" "$REPO\01_客户使用\浏览器插件" /E
+
+# 2. 源码
+robocopy "$SRC\02_完整源码\插件源码" "$REPO\02_完整源码\插件源码" /MIR /XD node_modules release-dist dist _backup_*
+
+# 3. 交付包 / 说明 / 文档 / 版本信息
+Copy-Item "$SRC\DL评论助手_V2_客户使用_最终版.zip" $REPO -Force
+(Get-FileHash "$REPO\DL评论助手_V2_客户使用_最终版.zip" -Algorithm SHA256).Hash.ToLower() +
+  "  DL评论助手_V2_客户使用_最终版.zip" | Set-Content "$REPO\DL评论助手_V2_客户使用_最终版.zip.sha256"
+Copy-Item "$SRC\01_客户使用\V2_客户安装与使用说明.md" "$REPO\01_客户使用" -Force
+Copy-Item "$SRC\03_需求与维护文档\DL评论助手_维护说明.md" "$REPO\03_需求与维护文档" -Force
+# 手工更新 版本信息.json 的 version / buildDate / sha256，README 的版本与修复摘要
+
+# 4. 提交推送
 git add -A
-git commit -m "release: vX.Y.Z <一句话变更摘要>"
+git status --short      # 确认没有 node_modules / *.bak / _backup 混入
+git commit -m "更新至 vX.Y.Z：<一句话摘要>"
 git push
 ```
 
-**版本发布**：`gh release create vX.Y.Z DL-comment-helper-vX.Y.Z.zip --repo leidalin/DL-comment-helper --notes "…SHA256…"`（`gh` 已装在 `C:\Users\Administrator\AppData\Local\gh\bin\gh.exe`，用 `gh auth setup-git` 接管 git 凭据）。
+**凭据**：`gh` 已装在 `C:\Users\Administrator\AppData\Local\gh\bin\gh.exe`，账号 `leidalin`（显示名 `DL-cn`），device-flow OAuth（scope `repo`、`workflow`），token 存于 `%APPDATA%\GitHub CLI\hosts.yml`，`gh auth setup-git` 已接管 git 凭据。缺失 `read:org` 不影响本仓库操作。若客户端里 push 仍要密码，检查 `git config --global --get-regexp credential` 里是否残留 `helper-selector`。
 
-**凭据**：账号 `leidalin`（显示名 `DL-cn`），device-flow OAuth（scope `repo`、`workflow`），token 存于 `%APPDATA%\GitHub CLI\hosts.yml`。缺失 `read:org` 不影响本仓库操作。
+**注意**：这个仓库公开，任何被写进源码/文档的内网地址、账号密码、Key 都会公开。历史上曾误建过私有仓库 `leidalin/DL-comment-helper`（内容是本仓库的子集），已弃用，不要再往那里推。
 
 ---
 
@@ -288,11 +298,11 @@ git push
 
 ## 2026-10-20　代码上 GitHub + 客户目录残留清理
 
-1. **新增 GitHub 私有仓库** `leidalin/DL-comment-helper`（`main` 分支）：源码 70 个文件（`src` / `scripts` / `public` / 工程配置）、插件产物 `dist/`（27 个文件）、`docs/DL评论助手_维护说明.md` 与 `docs/V2_客户安装与使用说明.md`，另加仓库用 `README.md` 与 `.gitignore`。同步步骤见新增的第十一章。
-2. **交付包发 Release** `v2.0.3`，资产名用 ASCII `DL-comment-helper-v2.0.3.zip`（中文名会被 gh 上传成 `DL._V2_._.zip`），SHA256 `96662b0a6d8a02544996c18b0dd8209922f9f07dc87a5511faead53928d34da3`，与 `SHA256SUMS.txt` 一致。
+1. **更新已有仓库** `leidalin/cnsinda-ai-dist`（公开，GPL-3.0）至 **v2.0.3**：`01_客户使用/浏览器插件` 换成新产物（27 个文件，旧哈希文件已清）、交付 zip 与 `.sha256` 更新、`版本信息.json` 改为 2.0.3 / 2026-10-20；**新增** `02_完整源码/插件源码`（源码 + 构建工程）与 `03_需求与维护文档/DL评论助手_维护说明.md`；README 补源码/文档入口与 2.0.3 修复摘要；新增 `.gitignore`。仓库共 75 个文件，同步步骤见第十一章。
+2. **交付包校验**：zip 505,137 字节，SHA256 `96662b0a6d8a02544996c18b0dd8209922f9f07dc87a5511faead53928d34da3`，与 `SHA256SUMS.txt`、`版本信息.json`、仓库内 `.sha256` 四处一致（已从远端下载回校验）。
 3. **清掉 10-16 遗留待办**：删除 `01_客户使用\浏览器插件\assets\` 下 4 个无引用的历史哈希文件（`dashboard-Cls8zRJR.js`、`dashboard-lnQwee-z.css`、`evidence-NVFe9YMf.js`、`index-BxSlOgMd.js`）。已核对 HTML 引用表，无一被 `src/*.html` 引用；现 `dist`、`release-dist`、`01_客户使用\浏览器插件` 三者完全一致（各 27 个文件）。
 4. **发布前自检复验通过**：`dist` 内无 `console.` / `debugger;`、无 `.map/.ts/.vue`、`manifest.json` 无 `nativeMessaging`、`content_scripts` 覆盖 6 个平台、源码无硬编码 Key。
-5. **已知遗留**：`src/background/local-client.ts:223` 仍是内网网关默认值 `http://192.168.60.2:8084`，仓库为私有故未改动；若将来转公开需先改成占位符或改为必填。
+5. **已知遗留**：`src/background/local-client.ts:223` 仍是内网网关默认回退值 `http://192.168.60.2:8084`。仓库 `cnsinda-ai-dist` 是**公开**的，该地址已随源码公开——它只是 AIProxy 未指定网关时的兜底值，不含任何凭据。如介意，改为占位符后需重新 `build:release` 并同步三处产物。
 
 ## 2026-10-16（下午）　百家号重复评论事故
 

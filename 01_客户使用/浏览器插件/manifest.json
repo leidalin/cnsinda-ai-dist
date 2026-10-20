@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DL评论助手",
-  "version": "2.0.0",
+  "version": "2.0.3",
   "description": "检测我的评论、点赞和收藏状态，并在插件内完成内容任务",
   "permissions": [
     "storage",

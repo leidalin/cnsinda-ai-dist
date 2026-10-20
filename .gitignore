@@ -1,0 +1,25 @@
+# 依赖与构建临时产物
+node_modules/
+release-dist/
+_backup_*/
+*.tsbuildinfo
+
+# 备份与临时文件（注意：交付 zip 本身要提交，所以不忽略 *.zip）
+*.zip.backup-*
+*.bak
+*.bak.*
+*.orig
+*~
+
+# 编辑器与系统文件
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 本地配置与凭据，禁止入库
+.aiproxy_sxd/
+*.dlconfig
+.env
+.env.*

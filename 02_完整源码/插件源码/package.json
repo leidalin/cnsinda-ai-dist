@@ -1,0 +1,28 @@
+{
+   "name": "ai-comment-counter",
+   "version": "2.0.3",
+   "private": true,
+   "description": "DL评论助手 - Chrome 扩展",
+   "type": "module",
+   "scripts": {
+      "dev": "vite build --watch",
+      "build:ui": "vite build",
+      "build:scripts": "node scripts/build-scripts.js",
+      "build": "npm run build:ui && npm run build:scripts",
+      "build:release": "node scripts/build-release.js",
+      "postbuild": "node scripts/copy-assets.js"
+   },
+   "dependencies": {
+      "@element-plus/icons-vue": "^2.3.1",
+      "element-plus": "^2.8.0",
+      "vue": "^3.4.0"
+   },
+   "devDependencies": {
+      "@types/chrome": "^0.2.2",
+      "@vitejs/plugin-vue": "^5.0.0",
+      "esbuild": "^0.23.0",
+      "typescript": "^5.5.0",
+      "vite": "^5.4.0",
+      "vue-tsc": "^2.0.0"
+   }
+}

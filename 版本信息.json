@@ -1,9 +1,11 @@
 {
   "name": "DL评论助手",
-  "version": "2.0.0",
-  "buildDate": "2026-08-24",
+  "version": "2.0.3",
+  "buildDate": "2026-10-20",
   "package": "DL评论助手_V2_客户使用_最终版.zip",
-  "sha256": "2a7b05fe8780a500bb940308f661835cad63be2d2ed26361de183d0461b2e49a",
+  "sha256": "96662b0a6d8a02544996c18b0dd8209922f9f07dc87a5511faead53928d34da3",
   "supportedPlatforms": ["csdn", "zhihu", "toutiao", "baijiahao", "netease", "sohu"],
-  "distribution": "customer-only"
+  "distribution": "customer-only",
+  "sourcePath": "02_完整源码/插件源码",
+  "manifestVersion": 3
 }
